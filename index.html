@@ -8,14 +8,246 @@
 </head>
 <body>
   <canvas id="c"></canvas>
-  <div id="ui">
-    <div id="info"></div>
-    <div id="controls">
-      <button id="btn-spawn">+ spawn</button>
-      <button id="btn-rain">spore rain</button>
-      <button id="btn-reset">reset</button>
+
+  <div id="start-screen">
+    <div id="start-inner">
+      <h1 id="start-title">mycelium world</h1>
+      <p id="start-sub">choose your ecosystem</p>
+      <div id="biome-grid">
+        <button class="biome-btn" data-biome="earthy">
+          <span class="biome-icon">🍂</span>
+          <span class="biome-name">Earthy</span>
+          <span class="biome-desc">slow dense growth</span>
+        </button>
+        <button class="biome-btn" data-biome="aquatic">
+          <span class="biome-icon">🌊</span>
+          <span class="biome-name">Aquatic</span>
+          <span class="biome-desc">flowing spread</span>
+        </button>
+        <button class="biome-btn" data-biome="weather">
+          <span class="biome-icon">⚡</span>
+          <span class="biome-name">Weather</span>
+          <span class="biome-desc">erratic fast growth</span>
+        </button>
+        <button class="biome-btn" data-biome="volcanic">
+          <span class="biome-icon">🌋</span>
+          <span class="biome-name">Volcanic</span>
+          <span class="biome-desc">aggressive growth</span>
+        </button>
+        <button class="biome-btn" data-biome="arctic">
+          <span class="biome-icon">❄️</span>
+          <span class="biome-name">Arctic</span>
+          <span class="biome-desc">crystalline slow</span>
+        </button>
+      </div>
+      <button id="btn-about-start">about this project</button>
     </div>
   </div>
+
+  <div id="about-overlay" class="hidden">
+    <div id="about-inner">
+      <button id="btn-about-close">× close</button>
+      <div id="about-content">
+
+        <section class="about-section">
+          <h2>mycelium world</h2>
+          <p class="about-sub">a digital ecosystem — an artistic exploration in creative coding</p>
+        </section>
+
+        <section class="about-section">
+          <h3>world rules</h3>
+          <p>Everything you see and hear follows a fixed set of rules. Nothing is random decoration.</p>
+
+          <div class="rules-category">
+            <span class="rules-cat-label">🌱 growth</span>
+            <ul class="rules-list">
+              <li>Colonies grow outward one cell at a time from a random existing cell. Each step can jump 1–4 grid slots depending on biome.</li>
+              <li>A colony must reach its bloom threshold (45–100 cells, biome-dependent) before it turns colourful. Before that it appears grey-white.</li>
+              <li>When a snake is actively feeding in a colony's territory, that colony stops growing entirely until the snake leaves.</li>
+              <li>Two colonies cannot occupy the same grid slot. Growth is blocked where space is already claimed.</li>
+              <li>If a snake cuts deeply enough that a section of colony becomes disconnected from the main body, that section dies.</li>
+            </ul>
+          </div>
+
+          <div class="rules-category">
+            <span class="rules-cat-label">🎨 colour &amp; DNA</span>
+            <ul class="rules-list">
+              <li>Every colony is born with two seed colours drawn randomly from its biome's palette. These are its genetic identity.</li>
+              <li>At bloom, cells alternate between the two seed colours, creating the characteristic two-tone ring pattern.</li>
+              <li>After bloom, every new cell blends the two current colours with a small random drift — the palette evolves with each generation. This is colour DNA inheritance.</li>
+              <li>Spores carry the parent colony's colour lineage. New colonies born from spores start with inherited hues.</li>
+              <li>Eaters absorb the colours they eat. Their body colour is the running average of the last 10 cells consumed — it shifts as they move between colonies.</li>
+            </ul>
+          </div>
+
+          <div class="rules-category">
+            <span class="rules-cat-label">✨ spores</span>
+            <ul class="rules-list">
+              <li>Every colony periodically ejects a spore — a drifting cyan pixel that moves with random velocity.</li>
+              <li>When a spore's life runs out, it lands and starts a new colony wherever it stops.</li>
+              <li>If two spores collide mid-air, they merge instantly into a new colony at their midpoint.</li>
+              <li>Spores landing near dust trigger a special sound and often birth colonies with more genetic diversity.</li>
+              <li>A ripple ring expands from the landing site when a spore lands near existing cells.</li>
+            </ul>
+          </div>
+
+          <div class="rules-category">
+            <span class="rules-cat-label">🐛 eaters</span>
+            <ul class="rules-list">
+              <li>Eaters spawn on colony edges once enough colonies have bloomed. Their frequency depends on biome.</li>
+              <li>Each eater claims a feeding zone and grazes within it before migrating to a new area.</li>
+              <li>Eaters only eat edge cells — they can't tunnel into the interior of a colony directly.</li>
+              <li>Eaters repel each other. Bigger eaters need more personal space and push others away more forcefully.</li>
+              <li>Eaters grow through four stages as they eat: worm (black) → colour worm (absorbs colour) → thick worm → frog (two eyes). Each stage eats faster.</li>
+              <li>Growth rate is tied to ecosystem richness — more colonies means faster eater development.</li>
+              <li>Eaten cells leave dark scars that block new growth for a fixed duration before clearing.</li>
+            </ul>
+          </div>
+
+          <div class="rules-category">
+            <span class="rules-cat-label">💨 dust</span>
+            <ul class="rules-list">
+              <li>When a snake severs a colony section, the disconnected cells turn grey and become dust.</li>
+              <li>Dust fades over time. If a spore lands near dust before it disappears, a new colony is born from the remains.</li>
+              <li>If no spore reaches the dust in time, it vanishes — that energy is lost from the system.</li>
+            </ul>
+          </div>
+
+          <div class="rules-category">
+            <span class="rules-cat-label">🔊 sound rules</span>
+            <ul class="rules-list">
+              <li>The master volume rises with total cell count. A near-empty world is nearly silent.</li>
+              <li>Three drone layers build progressively: the first is always present, the second fades in once enough colonies bloom, the third once the world is dense.</li>
+              <li>The drone chord shifts over time to match the dominant colour hue of the world — orange world hums lower, blue world hums higher.</li>
+              <li>Micro events (rustles, tones, clicks, shimmers) fire more frequently as the world fills. A crowded world is sonically busy.</li>
+              <li>Every 25–60 seconds a swell rises and recedes. Its peak scales with world complexity.</li>
+              <li>Colony bloom → soft triangle chord tuned to the colony's colour.</li>
+              <li>Two colonies touching → deep sine chord blending both colony hues.</li>
+              <li>Spore ejected → quiet sustained sine from the lower register.</li>
+              <li>Two spores colliding → soft three-note chime (C, E, G).</li>
+              <li>Spore landing near cells → a soft thud and expanding ripple.</li>
+              <li>Spore landing near dust → a rising tone (new life from decay).</li>
+              <li>Eater migrating → dominant colour eaten triggers its nature sound: blue = water drop, green = cricket, red = frog croak, yellow = bird trill, magenta = moth flutter, cyan = wind chime.</li>
+            </ul>
+          </div>
+
+          <div class="rules-category">
+            <span class="rules-cat-label">🌍 biomes</span>
+            <ul class="rules-list">
+              <li>Earthy — amber and red palette, slow dense growth (rate 0.45), step sizes 1–2, max 4 eaters, deep low drones.</li>
+              <li>Aquatic — blue and cyan palette, flowing medium growth (rate 0.65), step sizes 1–3, max 3 eaters, mid-register drones.</li>
+              <li>Weather — purple and electric yellow, fast erratic growth (rate 0.80), step sizes 1–4, high drones, frequent spores.</li>
+              <li>Volcanic — deep red palette, aggressive growth (rate 0.70), max 10 eaters with fast eat cooldown, very low rumble drones.</li>
+              <li>Arctic — pale blue and white, very slow crystalline growth (rate 0.25), single-step only, max 2 eaters, sparse high tones.</li>
+            </ul>
+          </div>
+        </section>
+
+        <section class="about-section">
+          <h3>why this is a real ecosystem</h3>
+          <p>A digital ecosystem isn't just anything with interacting parts. The term has actual criteria — and this meets them.</p>
+          <div class="about-grid">
+            <div class="about-item">
+              <span class="about-label">emergence</span>
+              <span class="about-text">Visual patterns and colony shapes aren't programmed directly. They arise from simple rules interacting. No one designed the specific forms that appear.</span>
+            </div>
+            <div class="about-item">
+              <span class="about-label">interdependence</span>
+              <span class="about-text">Colonies compete for grid space. Spore collisions seed new growth. Eaters depend on colonies. Dust feeds the next generation. Each component's behaviour changes the others.</span>
+            </div>
+            <div class="about-item">
+              <span class="about-label">energy flow</span>
+              <span class="about-text">Spores carry colour lineage between colonies. Eaters redistribute that energy as scars and dust. Dust becomes substrate for new growth. A genuine nutrient cycle.</span>
+            </div>
+            <div class="about-item">
+              <span class="about-label">self-regulation</span>
+              <span class="about-text">Colonies can't grow infinitely — eaters consume them. Eaters can't multiply infinitely — colonies are their food. This feedback loop is the defining feature of an ecosystem.</span>
+            </div>
+            <div class="about-item">
+              <span class="about-label">succession</span>
+              <span class="about-text">The world changes in non-random ways. Sparse colonies → dense growth → eater pressure → separation and dust → regrowth from dust. That's ecological succession.</span>
+            </div>
+            <div class="about-item">
+              <span class="about-label">biome differentiation</span>
+              <span class="about-text">Five environments — Earthy, Aquatic, Weather, Volcanic, Arctic — each producing genuinely different emergent behaviours. Not visual skins. Different rules, different worlds.</span>
+            </div>
+          </div>
+          <p class="about-note">The rules here are aesthetic rather than physically accurate. That's a creative choice, not a flaw.</p>
+        </section>
+
+        <section class="about-section">
+          <h3>how the sound grows</h3>
+          <p>The soundscape responds to the world's complexity in real time.</p>
+          <div class="about-sound-states">
+            <div class="sound-state">
+              <span class="sound-dot dim"></span>
+              <span class="sound-label">empty</span>
+              <span class="sound-desc">nearly silent — one faint drone, long gaps between sounds</span>
+            </div>
+            <div class="sound-state">
+              <span class="sound-dot low"></span>
+              <span class="sound-label">first bloom</span>
+              <span class="sound-desc">second drone fades in — micro events begin to emerge</span>
+            </div>
+            <div class="sound-state">
+              <span class="sound-dot mid"></span>
+              <span class="sound-label">half full</span>
+              <span class="sound-desc">three drones humming — texture brightening — one event per second</span>
+            </div>
+            <div class="sound-state">
+              <span class="sound-dot full"></span>
+              <span class="sound-label">crowded</span>
+              <span class="sound-desc">full volume — high shimmer dominant — rapid forest texture</span>
+            </div>
+            <div class="sound-state">
+              <span class="sound-dot eater"></span>
+              <span class="sound-label">eaters active</span>
+              <span class="sound-desc">each colour eaten produces a distinct nature sound — water, crickets, wind</span>
+            </div>
+          </div>
+        </section>
+
+        <section class="about-section about-creator">
+          <h3>about the creator</h3>
+          <p>Sebastian Roa Viera is a designer, artist, and HR professional working at the intersection of human systems and creative technology.</p>
+          <div class="about-tags">
+            <span class="about-tag">pottery &amp; ceramic art</span>
+            <span class="about-tag">v60 pour-over experimentation</span>
+            <span class="about-tag">3d printing &amp; object design</span>
+            <span class="about-tag">creative coding</span>
+            <span class="about-tag">HR creative solutions</span>
+            <span class="about-tag">creative data &amp; analytics</span>
+          </div>
+          <p class="about-note">mycelium world is part of an ongoing exploration of how generative systems can model living complexity — not to simulate nature perfectly, but to find where code and biology speak the same language.</p>
+        </section>
+
+        <section class="about-section">
+          <h3>open source</h3>
+          <p class="about-note">This project is open source. The full codebase — simulation, audio engine, renderer, biome system — is available on GitHub. Build your own world.</p>
+<a id="github-link" href="https://github.com/seb-iche/pixelium" target="_blank">view on github →</a>        </section>
+
+      </div>
+    </div>
+  </div>
+
+  <div id="ui">
+    <div id="controls">
+      <button id="btn-spawn">+ spawn</button>
+      <button id="btn-reset">reset</button>
+      <button id="btn-menu" title="back to menu">⌂ menu</button>
+      <button id="btn-snapshot" title="snapshot">⬛</button>
+      <button id="btn-record" title="record">⏺</button>
+      <button id="btn-mute" title="mute">🔊</button>
+      <button id="btn-inspect" title="inspect on — click to disable">🔍</button>
+      <button id="btn-about">?</button>
+    </div>
+    <div id="info-row">
+      <span id="biome-label"></span>
+      <span id="timer">00:00:00</span>
+      <span id="info"></span>
+    </div>
+  </div>
+
   <script type="module" src="src/main.js"></script>
 </body>
 </html>
